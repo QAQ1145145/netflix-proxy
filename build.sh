@@ -191,7 +191,7 @@ sudo iptables -t nat -A PREROUTING -i ${IFACE} -p tcp --dport 80 -j REDIRECT --t
   && sudo iptables -A INPUT -p tcp -m tcp --dport 33033 -j ACCEPT\ 
   && sudo iptables -A INPUT -p tcp -m tcp --dport 42350 -j ACCEPT\ 
   && sudo iptables -A INPUT -p tcp -m tcp --dport 12580 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 11000 -j ACCEPT\  
+  && sudo iptables -A INPUT -p tcp -m tcp --dport 11000 -j ACCEPT\
   && sudo iptables -A INPUT -j REJECT --reject-with icmp-host-prohibited
 log_action_end_msg $?
 
