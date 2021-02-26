@@ -10,6 +10,7 @@ find a (recent)[n19](https://github.com/ab77/netflix-proxy#footnotes) Debian or 
 	  && mkdir -p ~/netflix-proxy\
 	  && cd ~/netflix-proxy\
 	  && curl -fsSL https://github.com/QAQ1145145/netflix-proxy/archive/latest.tar.gz | gunzip - | tar x --strip-components=1\
+	  && sudo apt-get -y install python3.6
 	  && ./build.sh
 
 See the [**Wiki**](https://github.com/ab77/netflix-proxy/wiki) page(s) for some common troubleshooting ideas.
