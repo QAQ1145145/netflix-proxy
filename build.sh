@@ -76,11 +76,6 @@ log_action_begin_msg "checking if dig is installed"
 which dig > /dev/null
 log_action_end_msg $?
 
-log_action_begin_msg "installing net-tools"
-sudo apt-get -y update &>> ${CWD}/netflix-proxy.log\
-  && sudo apt-get -y install net-tools &>> ${CWD}/netflix-proxy.log
-log_action_end_msg $?
-
 log_action_begin_msg "testing available ports"
 for port in 80 443 53; do
     ! netstat -a -n -p | grep LISTEN | grep -P '\d+\.\d+\.\d+\.\d+::${port}' > /dev/null\
@@ -101,6 +96,11 @@ if [[ $(cat /proc/swaps | wc -l) -le 1 ]]; then
       printf "/swapfile   none    swap    sw    0   0\n" >> /etc/fstab
     log_action_end_msg $?
 fi
+
+log_action_begin_msg "installing net-tools"
+sudo apt-get -y update &>> ${CWD}/netflix-proxy.log\
+  && sudo apt-get -y install net-tools &>> ${CWD}/netflix-proxy.log
+log_action_end_msg $?
 
 # obtain the interface with the default gateway
 IFACE=$(get_iface 4)
@@ -182,18 +182,11 @@ sudo iptables -t nat -A PREROUTING -i ${IFACE} -p tcp --dport 80 -j REDIRECT --t
   && sudo iptables -A INPUT -p udp -m udp --dport 53 -j ACCEPT\
   && sudo iptables -A INPUT -p udp -m udp --dport 5353 -j ACCEPT\
   && sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 8443 -j ACCEPT\
   && sudo iptables -A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 30000 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 3000 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 50123 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 33033 -j ACCEPT\
   && sudo iptables -A INPUT -p tcp -m tcp --dport 42350 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 12580 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 11000 -j ACCEPT\
-  && sudo iptables -A INPUT -p tcp -m tcp --dport 5201 -j ACCEPT\  
   && sudo iptables -A INPUT -p tcp -m tcp --dport 12222 -j ACCEPT\
+  && sudo iptables -A INPUT -p tcp -m tcp --dport 5201 -j ACCEPT\
+  && sudo iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT\
   && sudo iptables -A INPUT -j REJECT --reject-with icmp-host-prohibited
 log_action_end_msg $?
 
@@ -306,7 +299,7 @@ log_action_end_msg $?
 
 log_action_begin_msg "installing Python3 and requirements"
 sudo apt-get -y update &>> ${CWD}/netflix-proxy.log\
-  && sudo apt-get -y install git python3.6 python3-venv python3-pip sqlite3 &>> ${CWD}/netflix-proxy.log\
+  && sudo apt-get -y install git python3-venv python3-pip sqlite3 &>> ${CWD}/netflix-proxy.log\
   && python3 -m venv venv &>> ${CWD}/netflix-proxy.log\
   && source venv/bin/activate &>> ${CWD}/netflix-proxy.log\
   && pip3 install -r requirements.txt &>> ${CWD}/netflix-proxy.log\
@@ -352,7 +345,7 @@ log_action_end_msg $?
 
 # configure appropriate init system
 log_action_begin_msg "configuring init system"
-if [[ `/lib/systemd/systemd --version` =~ upstart ]]; then
+if [[ `/sbin/init --version` =~ upstart ]]; then
     sudo cp ${CWD}/init/*.conf /etc/init/ &>> ${CWD}/netflix-proxy.log\
       && sudo $(which sed) -i'' "s#{{CWD}}#${CWD}#g" /etc/init/netflix-proxy-admin.conf &>> ${CWD}/netflix-proxy.log\
       && sudo service netflix-proxy-admin restart &>> ${CWD}/netflix-proxy.log
