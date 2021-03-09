@@ -75,6 +75,11 @@ log_action_begin_msg "checking if dig is installed"
 which dig > /dev/null
 log_action_end_msg $?
 
+log_action_begin_msg "installing net-tools"
+sudo apt-get -y update &>> ${CWD}/netflix-proxy.log\
+  && sudo apt-get -y install net-tools &>> ${CWD}/netflix-proxy.log
+log_action_end_msg $?
+
 log_action_begin_msg "testing available ports"
 for port in 80 443 53; do
     ! netstat -a -n -p | grep LISTEN | grep -P '\d+\.\d+\.\d+\.\d+::${port}' > /dev/null\
