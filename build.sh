@@ -193,6 +193,10 @@ sudo iptables -t nat -A PREROUTING -i ${IFACE} -p tcp --dport 80 -j REDIRECT --t
   && sudo iptables -A INPUT -p udp -m state --state NEW -m udp --dport 42350 -j ACCEPT\
   && sudo iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 50123 -j ACCEPT\
   && sudo iptables -A INPUT -p udp -m state --state NEW -m udp --dport 50123 -j ACCEPT\
+  && sudo iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 8443 -j ACCEPT\
+  && sudo iptables -A INPUT -p udp -m state --state NEW -m udp --dport 8443 -j ACCEPT\
+  && sudo iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 3000 -j ACCEPT\
+  && sudo iptables -A INPUT -p udp -m state --state NEW -m udp --dport 3000 -j ACCEPT\
   && sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT\
   && sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT\
   && sudo iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT\
